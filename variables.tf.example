@@ -11,3 +11,11 @@ variable "aws_secret_key" {
 variable "aws_region" {
   default = "us-west-2"
 }
+
+variable "public_key" {
+  default = "path_to_public_key.pub"
+}
+
+variable "private_key" {
+  default = "path_to_private_key"
+}

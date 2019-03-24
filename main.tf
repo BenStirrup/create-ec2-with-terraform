@@ -1,28 +1,27 @@
-resource "aws_instance" "my-test-instance" {
-  ami           = "${data.aws_ami.ubuntu.id}"
-  instance_type = "t2.micro"
-  key_name      = "${aws_key_pair.my-test-key.key_name}"
+module "nginx-server" {
+  source = "nginx-server"
+
+  name         = "nginx-server"
+  key_pair     = "${aws_key_pair.my-test-key.key_name}"
+  key_pair_key = "${var.private_key}"
 
   security_groups = [
     "${aws_security_group.allow_ssh.name}",
     "${aws_security_group.allow_http.name}",
     "${aws_security_group.allow_outbound.name}",
   ]
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get -y install nginx",
-    ]
-  }
+module "nginx-server-2" {
+  source = "nginx-server"
 
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = "${file("~/.ssh/id_rsa")}"
-  }
+  name         = "nginx-server-2"
+  key_pair     = "${aws_key_pair.my-test-key.key_name}"
+  key_pair_key = "${var.private_key}"
 
-  tags {
-    Name = "test-instance"
-  }
+  security_groups = [
+    "${aws_security_group.allow_ssh.name}",
+    "${aws_security_group.allow_http.name}",
+    "${aws_security_group.allow_outbound.name}",
+  ]
 }
